@@ -65,6 +65,16 @@ public class UserServiceImpl implements UserService {
         return new LoginResponse(accessToken, refreshToken);
     }
 
+    @Override
+    public void logout(User user, String rawAccessToken) {
+
+        String accessToken = jwtUtil.substringToken(rawAccessToken);
+        Long expiration = jwtUtil.getUserInfoFromToken(accessToken).getExpiration().getTime();
+        tokenService.setBlacklist(accessToken, "logout", expiration);
+
+        tokenService.deleteRefreshToken(user.getEmail());
+    }
+
     @Transactional
     public void updateInfo(InfoUpdateRequest infoUpdateReq, User user) {
         String nickname = infoUpdateReq.nickname();

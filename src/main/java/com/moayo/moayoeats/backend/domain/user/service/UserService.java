@@ -25,6 +25,12 @@ public interface UserService {
     LoginResponse login(LoginRequest loginReq);
 
     /**
+     * @param user        : 해당 계정으로 로그인한 사용자
+     * @param accessToken : 로그인한 사용자의 access token
+     */
+    void logout(User user, String accessToken);
+
+    /**
      * @param infoUpdateReq : 회원수정에 필요한 요청 dto
      * @param user          : 해당 계정으로 로그인한 사용자
      */
