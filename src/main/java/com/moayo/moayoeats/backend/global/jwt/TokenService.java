@@ -103,4 +103,16 @@ public class TokenService {
 
         redisTemplate.opsForValue().getAndDelete(email);
     }
+
+    // access token 블랙리스트 추가
+    public void setBlacklist(String accessToken, String message, Long expiration) {
+
+        redisTemplate.opsForValue().set(accessToken, message, expiration, TimeUnit.MILLISECONDS);
+    }
+
+    // 해당 access token이 블랙리스트에 있는지 확인
+    public boolean isBlacklisted(String accessToken) {
+
+        return redisTemplate.hasKey(accessToken);
+    }
 }
