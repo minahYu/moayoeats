@@ -43,7 +43,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, tokenService);
+        return new JwtAuthorizationFilter(jwtUtil, tokenService, userDetailsService, tokenService);
     }
 
     @Bean

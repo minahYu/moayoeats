@@ -2,6 +2,8 @@ package com.moayo.moayoeats.backend.global.security;
 
 import static com.moayo.moayoeats.backend.global.jwt.JwtUtil.AUTHORIZATION_HEADER;
 
+import com.moayo.moayoeats.backend.domain.user.exception.UserErrorCode;
+import com.moayo.moayoeats.backend.global.exception.GlobalException;
 import com.moayo.moayoeats.backend.global.jwt.JwtUtil;
 import com.moayo.moayoeats.backend.global.jwt.TokenService;
 import io.jsonwebtoken.Claims;
@@ -26,6 +28,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
     private final UserDetailsServiceImpl userDetailsService;
     private final TokenService refreshTokenService;
 
@@ -52,6 +55,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(tokenValue)) {
             tokenValue = jwtUtil.substringToken(tokenValue);
+
+            if (tokenService.isBlacklisted(tokenValue)) {
+                throw new GlobalException(UserErrorCode.UNAUTHORIZED_USER);
+            }
 
             if (!jwtUtil.validateToken(tokenValue)) {
                 log.error("Token Error");
