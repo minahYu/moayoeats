@@ -17,6 +17,7 @@ import com.moayo.moayoeats.backend.domain.user.service.UserService;
 import com.moayo.moayoeats.backend.global.dto.ApiResponse;
 import com.moayo.moayoeats.backend.global.jwt.JwtUtil;
 import com.moayo.moayoeats.backend.global.security.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -66,6 +67,16 @@ public class UserController {
         return new ApiResponse<>(HttpStatus.OK.value(), "로그인을 성공했습니다.", loginRes);
     }
 
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        HttpServletRequest req
+    ) {
+
+        String token = jwtUtil.getTokenFromRequest(req, AUTHORIZATION_HEADER);
+        userService.logout(userDetails.getUser(), token);
+        return new ApiResponse<>(HttpStatus.OK.value(), "로그아웃을 성공했습니다.");
+    }
 
     @PatchMapping()
     public ApiResponse<Void> updateInfo(
